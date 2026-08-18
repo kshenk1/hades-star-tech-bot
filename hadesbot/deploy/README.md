@@ -7,19 +7,17 @@
 - Instance type: `t3.micro` is plenty — this bot is I/O-bound, barely touches CPU
 - Storage: default 8GB gp3 is fine
 - Security group: **no inbound rules needed at all**. The bot only makes
-  outbound connections to Discord's gateway/API — you don't need to open any
-  ports. Leave inbound as just your own IP on port 22 for SSH, nothing else.
-- Key pair: create/reuse one for SSH access
+  outbound connections to Discord's gateway/API — you don't need to open any ports.
+- Key pair: Use SSM instead
 
 ## 2. Get the code onto the box
 
 From your machine:
 ```bash
-scp -i your-key.pem -r hadesbot ec2-user@<instance-ip>:~/hadesbot
+aws ssm start-session --target the-hades-bot-instance --region us-east-1
 ```
 or clone from git directly on the box if you've pushed it to a repo:
 ```bash
-ssh -i your-key.pem ec2-user@<instance-ip>
 git clone <your-repo-url> hades-star-tech-bot
 cd hades-star-tech-bot/hadesbot
 ```
@@ -27,7 +25,6 @@ cd hades-star-tech-bot/hadesbot
 ## 3. Run setup (once)
 
 ```bash
-ssh -i your-key.pem ec2-user@<instance-ip>
 cd hadesbot   # wherever you copied/cloned it
 sudo bash deploy/setup.sh
 ```
@@ -95,5 +92,4 @@ This bot holds a single websocket connection to Discord's gateway and does
 occasional SQLite reads/writes on slash commands from one team. It'll sit at
 low single-digit percent CPU and a few dozen MB of RAM. If you're on the AWS
 Free Tier, a single t3.micro running 24/7 falls within the free-tier hours
-allotment for the first 12 months on a new account — check your current
-billing dashboard to confirm, since free-tier terms can change.
+allotment... for now.

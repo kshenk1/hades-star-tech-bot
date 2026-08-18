@@ -7,6 +7,22 @@ from db.database import get_session
 from db.models import Guild, ModAlias, ModType, Player, PlayerMod, PlayerShip, ShipType
 
 
+SLOT_TYPE_COLORS = {
+    "Mining": discord.Color.purple(),
+    "Transport": discord.Color.gold(),
+    "Weapon": discord.Color.red(),
+    "Shield": discord.Color.from_rgb(0, 255, 255),
+    "Drone": discord.Color.orange(),
+    "Combat": discord.Color.green(),
+}
+SLOT_TYPE_ORDER = ["Transport", "Mining", "Weapon", "Shield", "Combat", "Drone"]
+
+SHIP_COLORS = {
+    "Transport": discord.Color.gold(),
+    "Miner": discord.Color.purple(),
+    "Battleship": discord.Color.red(),
+}
+
 def get_or_create_player(session, guild: discord.Guild, member: discord.Member) -> Player:
     # ensure guild row exists (FK requirement)
     g = session.get(Guild, guild.id)
@@ -63,6 +79,20 @@ class Players(commands.Cog):
         finally:
             session.close()
 
+    async def mod_type_autocomplete(self, interaction: discord.Interaction, current: str):
+        session = get_session()
+        try:
+            stmt = (
+                select(ModType.slot_type)
+                .where(ModType.slot_type.ilike(f"%{current}%"))
+                .distinct()
+                .order_by(ModType.slot_type)
+            )
+            results = session.execute(stmt).scalars().all()
+            return [app_commands.Choice(name=s, value=s) for s in results if s]
+        finally:
+            session.close()
+
     async def ship_autocomplete(self, interaction: discord.Interaction, current: str):
         session = get_session()
         try:
@@ -73,6 +103,32 @@ class Players(commands.Cog):
             session.close()
 
     # ---------- mods ----------
+    @app_commands.command(name="listmods", description="List all modules and their aliases for a module type")
+    @app_commands.autocomplete(mod_type=mod_type_autocomplete)
+    async def listmods(self, interaction: discord.Interaction, mod_type: str):
+        session = get_session()
+        try:
+            stmt = select(ModType).where(ModType.slot_type == mod_type).order_by(ModType.name)
+            mod_types = session.execute(stmt).scalars().all()
+            if not mod_types:
+                await interaction.response.send_message("Unknown mod type. Pick one from the autocomplete list.", ephemeral=True)
+                return
+
+            lines = []
+            for mt in mod_types:
+                aliases = [ma.alias for ma in mt.aliases]
+                levels = f"levels: {mt.min_level}–{mt.max_level}" if mt.min_level > 1 else f"max level: {mt.max_level}"
+                line = f"**{mt.name}** (key: {mt.key}, {levels})"
+                if aliases:
+                    line += f" — Aliases: {', '.join(aliases)}"
+                lines.append(line)
+
+            color = SLOT_TYPE_COLORS.get(mod_type, discord.Color.blurple())
+            embed = discord.Embed(title=f"Modules: {mod_type}", description="\n".join(lines), color=color)
+            await interaction.response.send_message(embed=embed)
+        finally:
+            session.close()
+
     @app_commands.command(name="mods", description="List all mods set for a user")
     async def mods(self, interaction: discord.Interaction):
         session = get_session()
@@ -120,9 +176,9 @@ class Players(commands.Cog):
             if not mod_type:
                 await interaction.response.send_message("Unknown mod. Pick one from the autocomplete list.", ephemeral=True)
                 return
-            if not (1 <= level <= mod_type.max_level):
+            if not (mod_type.min_level <= level <= mod_type.max_level):
                 await interaction.response.send_message(
-                    f"{mod_type.name} only goes up to level {mod_type.max_level}.", ephemeral=True
+                    f"{mod_type.name} only goes from level {mod_type.min_level} to {mod_type.max_level}.", ephemeral=True
                 )
                 return
 
@@ -171,8 +227,8 @@ class Players(commands.Cog):
                 if not mod_type:
                     errors.append(f'"{name_part}" (no matching mod)')
                     continue
-                if not (1 <= level <= mod_type.max_level):
-                    errors.append(f"{mod_type.name} (level must be 1-{mod_type.max_level})")
+                if not (mod_type.min_level <= level <= mod_type.max_level):
+                    errors.append(f"{mod_type.name} (level must be {mod_type.min_level}-{mod_type.max_level})")
                     continue
 
                 stmt = select(PlayerMod).where(PlayerMod.player_id == player.id, PlayerMod.mod_key == mod_type.key)
@@ -200,14 +256,25 @@ class Players(commands.Cog):
         session = get_session()
         try:
             player = get_or_create_player(session, interaction.guild, interaction.user)
-            stmt = select(PlayerShip).where(PlayerShip.player_id == player.id).order_by(ShipType.name)
+            stmt = (
+                select(PlayerShip)
+                .join(ShipType, PlayerShip.ship_key == ShipType.key)
+                .where(PlayerShip.player_id == player.id)
+                .order_by(ShipType.name)
+            )
             player_ships = session.execute(stmt).scalars().all()
             if not player_ships:
                 await interaction.response.send_message("You haven't set any ship designs yet.")
                 return
-            lines = [f"{ps.ship_type.name}: level {ps.level}" for ps in player_ships]
-            embed = discord.Embed(title="Your Ship Designs", description="\n".join(lines))
-            await interaction.response.send_message(embed=embed)
+            embeds = [
+                discord.Embed(
+                    title=ps.ship_type.name,
+                    description=f"Level {ps.level}",
+                    color=SHIP_COLORS.get(ps.ship_type.key, discord.Color.blurple()),
+                )
+                for ps in player_ships
+            ]
+            await interaction.response.send_message(embeds=embeds)
         finally:
             session.close()
 
@@ -301,18 +368,33 @@ class Players(commands.Cog):
                 await interaction.response.send_message(f"No data tracked for {member.display_name} yet.", ephemeral=True)
                 return
 
-            embed = discord.Embed(title=f"{member.display_name}'s stats", color=discord.Color.blurple())
+            embeds = [discord.Embed(title=f"{member.display_name}'s stats", color=discord.Color.blurple())]
 
             if player.ships:
-                ship_lines = "\n".join(f"{ps.ship_type.name}: {ps.level}" for ps in player.ships)
-                embed.add_field(name="Ships", value=ship_lines, inline=False)
-            if player.mods:
-                mod_lines = "\n".join(f"{pm.mod_type.name}: {pm.level}" for pm in player.mods)
-                embed.add_field(name="Mods", value=mod_lines or "None", inline=False)
-            if not player.ships and not player.mods:
-                embed.description = "No mod/ship levels recorded yet."
+                ship_lines = "\n".join(f"{ps.ship_type.name}: {ps.level}" for ps in sorted(player.ships, key=lambda ps: ps.ship_type.name))
+                embeds[0].add_field(name="🚀 Ships", value=ship_lines, inline=False)
 
-            await interaction.response.send_message(embed=embed)
+            mods_by_slot = {}
+            for pm in player.mods:
+                mods_by_slot.setdefault(pm.mod_type.slot_type or "Other", []).append(pm)
+
+            first_mod_embed = True
+            for slot_type in SLOT_TYPE_ORDER + sorted(set(mods_by_slot) - set(SLOT_TYPE_ORDER)):
+                mods = mods_by_slot.get(slot_type)
+                if not mods:
+                    continue
+                mod_lines = "\n".join(f"{pm.mod_type.name}: {pm.level}" for pm in sorted(mods, key=lambda pm: pm.mod_type.name))
+                color = SLOT_TYPE_COLORS.get(slot_type, discord.Color.blurple())
+                embed = discord.Embed(title=slot_type, description=mod_lines, color=color)
+                if first_mod_embed:
+                    embed.set_author(name="⚙️ Modules")
+                    first_mod_embed = False
+                embeds.append(embed)
+
+            if not player.ships and not player.mods:
+                embeds[0].description = "No mod/ship levels recorded yet."
+
+            await interaction.response.send_message(embeds=embeds)
         finally:
             session.close()
 

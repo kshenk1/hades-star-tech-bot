@@ -70,6 +70,7 @@ class ModType(Base):
     name: Mapped[str] = mapped_column(String(60))
     slot_type: Mapped[str | None] = mapped_column(String(30), nullable=True)  # Trade / Mining / Support / etc.
     max_level: Mapped[int] = mapped_column(Integer, default=15)
+    min_level: Mapped[int] = mapped_column(Integer, default=1)  # some mods don't start at 1, e.g. Motion Shield starts at 6
 
     aliases: Mapped[list["ModAlias"]] = relationship(back_populates="mod_type", cascade="all, delete-orphan")
 

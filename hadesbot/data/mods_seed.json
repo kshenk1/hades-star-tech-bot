@@ -2,11 +2,10 @@
   {
     "key": "TransportCapacity",
     "name": "Cargo Bay Extension",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-      "cargobay",
-      "cargo-bay",
       "cargo-bay-ext",
       "cargo-bay-extension",
       "cargoextension",
@@ -16,21 +15,22 @@
   {
     "key": "ShipmentComputer",
     "name": "Shipment Computer",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
       "shipmentcomputer",
       "shipment-computer",
       "ship-computer",
-      "shipcomputer",
       "ship-comp"
     ]
   },
   {
     "key": "RemoteRepair",
     "name": "Cargo Repair",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
       "cargorepair",
       "cargo-repair"
@@ -41,18 +41,20 @@
     "name": "Mining Boost",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "miningboost",
-        "mining-boost"
+      "miningboost",
+      "mining-boost"
     ]
   },
   {
     "key": "EMP",
     "name": "EMP",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "emp"
+      "emp"
     ]
   },
   {
@@ -60,9 +62,10 @@
     "name": "Repair Drone",
     "slot_type": "Drone",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "repairdrone",
-        "repair-drone"
+      "repairdrone",
+      "repair-drone"
     ]
   },
   {
@@ -70,10 +73,11 @@
     "name": "Alpha Shield",
     "slot_type": "Shield",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "alphashield",
-        "alpha-shield",
-        "alpha"
+      "alphashield",
+      "alpha-shield",
+      "alpha"
     ]
   },
   {
@@ -81,10 +85,11 @@
     "name": "Impulse Shield",
     "slot_type": "Shield",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "impulsshield",
-        "impulse-shield",
-        "impulse"
+      "impulsshield",
+      "impulse-shield",
+      "impulse"
     ]
   },
   {
@@ -92,47 +97,48 @@
     "name": "Omega Shield",
     "slot_type": "Shield",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "omegashield",
-        "omega-shield",
-        "omega"
+      "omegashield",
+      "omega-shield",
+      "omega"
     ]
   },
   {
     "key": "Teleport",
     "name": "Teleport",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "teleport",
-        "tp"
+      "teleport",
+      "tp",
+      "tele"
     ]
   },
   {
-    "key": "DamageAmplifier",
+    "key": "WeaponAmplifier",
     "name": "Weapon Amplifier",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "damageamplifier",
-        "damage-amplifier",
-        "weaponamplifier",
-        "weapon-amplifier",
-        "weapon-amp"
+      "weaponamplifier",
+      "weapon-amplifier",
+      "weapon-amp"
     ]
   },
   {
     "key": "RedStarExtender",
     "name": "Red Star Life Extender",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "redstar",
-        "red-star",
-        "redstar-extender",
-        "red-star-extender",
-        "redstarlifeextender",
-        "red-star-life-extender"
+      "redstar-extender",
+      "red-star-extender",
+      "redstarlifeextender",
+      "red-star-life-extender"
     ]
   },
   {
@@ -140,6 +146,7 @@
     "name": "Weak Battery",
     "slot_type": "Weapon",
     "max_level": 1,
+    "min_level": 1,
     "aliases": []
   },
   {
@@ -147,10 +154,11 @@
     "name": "Mass Battery",
     "slot_type": "Weapon",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "massbattery",
-        "mass-battery",
-        "mass-batt"
+      "massbattery",
+      "mass-battery",
+      "mass-batt"
     ]
   },
   {
@@ -158,18 +166,20 @@
     "name": "Laser",
     "slot_type": "Weapon",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "lazer",
-        "laser"
+      "lazer",
+      "laser"
     ]
   },
   {
     "key": "Stealth",
     "name": "Stealth",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "stealth"
+      "stealth"
     ]
   },
   {
@@ -177,11 +187,12 @@
     "name": "Hydrogen Replicator",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "hydroreplicator",
-        "hydrogen-replicator",
-        "hydro-replicator",
-        "hydro-rep"
+      "hydroreplicator",
+      "hydrogen-replicator",
+      "hydro-replicator",
+      "hydro-rep"
     ]
   },
   {
@@ -189,28 +200,31 @@
     "name": "Remote Mining",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "massmining",
-        "remote-mining"
+      "massmining",
+      "remote-mining"
     ]
   },
   {
     "key": "Solitude",
     "name": "Solitude",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "solitude",
-        "sol"
+      "solitude",
+      "sol"
     ]
   },
   {
     "key": "Fortify",
     "name": "Fortify",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "fortify"
+      "fortify"
     ]
   },
   {
@@ -218,40 +232,33 @@
     "name": "Decoy Drone",
     "slot_type": "Drone",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "decoydrone",
-        "decoy-drone",
-        "decoy"
-    ]
-  },
-  {
-    "key": "D_Supress",
-    "name": "Suppress",
-    "slot_type": "Support",
-    "max_level": 15,
-    "aliases": [
-        "suppress",
-        "supress"
+      "decoydrone",
+      "decoy-drone",
+      "decoy"
     ]
   },
   {
     "key": "ShipmentDrone",
     "name": "Shipment Drone",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "shipmentdrone",
-        "shipment-drone",
-        "ship-drone"
+      "shipmentdrone",
+      "shipment-drone",
+      "ship-drone"
     ]
   },
   {
     "key": "Destiny",
     "name": "Destiny",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "destiny"
+      "destiny"
     ]
   },
   {
@@ -259,12 +266,13 @@
     "name": "Regenerating Shield",
     "slot_type": "Shield",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "regen-shield",
-        "regenerating-shield",
-        "passive-shield",
-        "passiveshield",
-        "regen"
+      "regen-shield",
+      "regenerating-shield",
+      "passive-shield",
+      "passiveshield",
+      "regen"
     ]
   },
   {
@@ -272,10 +280,11 @@
     "name": "Mirror Shield",
     "slot_type": "Shield",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "mirrorshield",
-        "mirror-shield",
-        "mirror"
+      "mirrorshield",
+      "mirror-shield",
+      "mirror"
     ]
   },
   {
@@ -283,10 +292,11 @@
     "name": "Hydrogen Upload",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "hydrogenupload",
-        "hydrogen-upload",
-        "hydro-upload"
+      "hydrogenupload",
+      "hydrogen-upload",
+      "hydro-upload"
     ]
   },
   {
@@ -294,10 +304,11 @@
     "name": "Artifact Boost",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "artifactboost",
-        "artifact-boost",
-        "art-boost"
+      "artifactboost",
+      "artifact-boost",
+      "art-boost"
     ]
   },
   {
@@ -305,22 +316,24 @@
     "name": "Dual Laser",
     "slot_type": "Weapon",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "duallaser",
-        "dual-laser",
-        "dual",
-        "dual-lazer",
-        "duallazer"
+      "duallaser",
+      "dual-laser",
+      "dual",
+      "dual-lazer",
+      "duallazer"
     ]
   },
   {
     "key": "Barrier",
     "name": "Barrier",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "barrier",
-        "bar"
+      "barrier",
+      "bar"
     ]
   },
   {
@@ -328,40 +341,32 @@
     "name": "Barrage",
     "slot_type": "Weapon",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "barrage"
-    ]
-  },
-  {
-    "key": "TradeBurst",
-    "name": "Trade Burst",
-    "slot_type": "Trade",
-    "max_level": 15,
-    "aliases": [
-        "tradeburst",
-        "trade-burst",
-        "trade-bursts"
+      "barrage"
     ]
   },
   {
     "key": "Leap",
     "name": "Leap",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "leap"
+      "leap"
     ]
   },
   {
     "key": "Vengeance",
     "name": "Vengeance",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "vengeance",
-        "vengence",
-        "vengance",
-        "venge"
+      "vengeance",
+      "vengence",
+      "vengance",
+      "venge"
     ]
   },
   {
@@ -369,8 +374,9 @@
     "name": "Crunch",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "crunch"
+      "crunch"
     ]
   },
   {
@@ -378,9 +384,10 @@
     "name": "Rocket Drone",
     "slot_type": "Drone",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "rocketdrone",
-        "rocket-drone"
+      "rocketdrone",
+      "rocket-drone"
     ]
   },
   {
@@ -388,17 +395,19 @@
     "name": "Enrich",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "enrich"
+      "enrich"
     ]
   },
   {
     "key": "Rush",
     "name": "Rush",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "rush"
+      "rush"
     ]
   },
   {
@@ -406,9 +415,10 @@
     "name": "Genesis",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "genesis",
-        "gen"
+      "genesis",
+      "gen"
     ]
   },
   {
@@ -416,11 +426,12 @@
     "name": "Ally Shield",
     "slot_type": "Shield",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "areashield",
-        "area-shield",
-        "ally-shield",
-        "allyshield"
+      "areashield",
+      "area-shield",
+      "ally-shield",
+      "allyshield"
     ]
   },
   {
@@ -428,30 +439,33 @@
     "name": "Chain Ray Turret",
     "slot_type": "Drone",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "chainraydrone",
-        "chain-ray-drone",
-        "chain-turret",
-        "chain-ray-turret"
+      "chainraydrone",
+      "chain-ray-drone",
+      "chain-turret",
+      "chain-ray-turret"
     ]
   },
   {
     "key": "Bond",
     "name": "Bond",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "bond"
+      "bond"
     ]
   },
   {
     "key": "DeltaRocket",
     "name": "Delta Rocket",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "deltarocket",
-        "delta-rocket"
+      "deltarocket",
+      "delta-rocket"
     ]
   },
   {
@@ -459,19 +473,21 @@
     "name": "Blast Shield",
     "slot_type": "Shield",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "blastshield",
-        "blast-shield"
+      "blastshield",
+      "blast-shield"
     ]
   },
   {
     "key": "OmegaRocket",
     "name": "Omega Rocket",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "omegarocket",
-        "omega-rocket"
+      "omegarocket",
+      "omega-rocket"
     ]
   },
   {
@@ -479,9 +495,10 @@
     "name": "Blast Drone",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "blastdrone",
-        "blast-drone"
+      "blastdrone",
+      "blast-drone"
     ]
   },
   {
@@ -489,11 +506,12 @@
     "name": "Bomber Rocket",
     "slot_type": "Weapon",
     "max_level": 2,
+    "min_level": 1,
     "aliases": [
-        "bomberlauncher",
-        "bomber-launcher",
-        "bomber-rocket",
-        "bomberrocket"
+      "bomberlauncher",
+      "bomber-launcher",
+      "bomber-rocket",
+      "bomberrocket"
     ]
   },
   {
@@ -501,18 +519,20 @@
     "name": "Dart Launcher",
     "slot_type": "Weapon",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "dartlauncher",
-        "dart-launcher"
+      "dartlauncher",
+      "dart-launcher"
     ]
   },
   {
     "key": "Dispatch",
     "name": "Dispatch",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "dispatch"
+      "dispatch"
     ]
   },
   {
@@ -520,39 +540,43 @@
     "name": "Hydrogen Rocket",
     "slot_type": "Mining",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "hydrorocket",
-        "hydrogen-rocket",
-        "hydro-rocket"
+      "hydrorocket",
+      "hydrogen-rocket",
+      "hydro-rocket"
     ]
   },
   {
     "key": "Suspend",
     "name": "Suspend",
-    "slot_type": "Support",
+    "slot_type": "Combat",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "suspend"
+      "suspend"
     ]
   },
   {
     "key": "RemoteBomb",
     "name": "Remote Bomb",
-    "slot_type": "Support",
-    "max_level": 12,
+    "slot_type": "Combat",
+    "max_level": 15,
+    "min_level": 4,
     "aliases": [
-        "remotebomb",
-        "remote-bomb"
+      "remotebomb",
+      "remote-bomb"
     ]
   },
   {
     "key": "RelicDrone",
     "name": "Relic Drone",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "relicdrone",
-        "relic-drone"
+      "relicdrone",
+      "relic-drone"
     ]
   },
   {
@@ -560,130 +584,111 @@
     "name": "Laser Turret",
     "slot_type": "Drone",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "laserturret",
-        "laser-turret",
-        "lazerturret",
-        "lazer-turret"
+      "laserturret",
+      "laser-turret",
+      "lazerturret",
+      "lazer-turret"
     ]
   },
   {
     "key": "RocketLauncher",
     "name": "Rocket Launcher",
     "slot_type": "Weapon",
-    "max_level": 10,
+    "max_level": 15,
+    "min_level": 6,
     "aliases": [
-        "rocketlauncher",
-        "rocket-launcher"
+      "rocketlauncher",
+      "rocket-launcher"
     ]
   },
   {
     "key": "Pulse",
     "name": "Pulse",
     "slot_type": "Weapon",
-    "max_level": 5,
+    "max_level": 15,
+    "min_level": 11,
     "aliases": [
-        "pulse"
+      "pulse"
     ]
   },
   {
     "key": "ChainRay",
     "name": "Chain Ray",
     "slot_type": "Weapon",
-    "max_level": 10,
+    "max_level": 15,
+    "min_level": 6,
     "aliases": [
-        "chainray",
-        "chain-ray"
+      "chainray",
+      "chain-ray"
     ]
   },
   {
     "key": "CerberusDrone",
     "name": "Cerberus Drone",
     "slot_type": "Drone",
-    "max_level": 12,
+    "max_level": 15,
+    "min_level": 6,
     "aliases": [
-        "cerberusdrone",
-        "cerberus-drone",
-        "cerberus"
+      "cerberusdrone",
+      "cerberus-drone",
+      "cerberus"
     ]
   },
   {
     "key": "DroneSquad",
     "name": "Drone Squad",
     "slot_type": "Drone",
-    "max_level": 12,
+    "max_level": 15,
+    "min_level": 11,
     "aliases": [
-        "dronesquad",
-        "drone-squad"
-    ]
-  },
-  {
-    "key": "Teleport",
-    "name": "Teleport",
-    "slot_type": "Support",
-    "max_level": 1,
-    "aliases": [
-        "teleport"
+      "dronesquad",
+      "drone-squad"
     ]
   },
   {
     "key": "DeltaDrone",
     "name": "Delta Drone",
     "slot_type": "Drone",
-    "max_level": 5,
-    "aliases": [
-        "deltadrone",
-        "delta-drone"
-    ]
-  },
-  {
-    "key": "ChainRay",
-    "name": "Chain Ray",
-    "slot_type": "Weapon",
     "max_level": 15,
+    "min_level": 11,
     "aliases": [
-        "chainray",
-        "chain-ray"
+      "deltadrone",
+      "delta-drone"
     ]
   },
   {
     "key": "CargoRocket",
     "name": "Cargo Rocket",
-    "slot_type": "Trade",
-    "max_level": 5,
+    "slot_type": "Transport",
+    "max_level": 15,
+    "min_level": 11,
     "aliases": [
-        "cargorocket",
-        "cargo-rocket"
+      "cargorocket",
+      "cargo-rocket"
     ]
   },
   {
     "key": "MotionShield",
     "name": "Motion Shield",
     "slot_type": "Shield",
-    "max_level": 10,
+    "max_level": 15,
+    "min_level": 6,
     "aliases": [
-        "motionshield",
-        "motion-shield"
+      "motionshield",
+      "motion-shield"
     ]
   },
   {
     "key": "TradeBurst",
     "name": "Trade Burst",
-    "slot_type": "Trade",
+    "slot_type": "Transport",
     "max_level": 15,
+    "min_level": 1,
     "aliases": [
-        "tradeburst",
-        "trade-burst"
-    ]
-  },
-  {
-    "key": "DroneSquad",
-    "name": "Drone Squad",
-    "slot_type": "Drone",
-    "max_level": 10,
-    "aliases": [
-        "dronesquad",
-        "drone-squad"
+      "tradeburst",
+      "trade-burst"
     ]
   }
 ]

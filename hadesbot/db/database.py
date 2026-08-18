@@ -1,6 +1,6 @@
 import os
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 
 from db.models import Base
@@ -19,6 +19,19 @@ SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
 def init_db():
     Base.metadata.create_all(engine)
+    _add_missing_columns()
+
+
+def _add_missing_columns():
+    """create_all() only adds new tables, not new columns on existing ones —
+    patch in columns added after a table already existed on disk."""
+    inspector = inspect(engine)
+    if "mod_types" not in inspector.get_table_names():
+        return
+    existing_columns = {col["name"] for col in inspector.get_columns("mod_types")}
+    if "min_level" not in existing_columns:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE mod_types ADD COLUMN min_level INTEGER DEFAULT 1"))
 
 
 def get_session():

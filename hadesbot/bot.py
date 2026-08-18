@@ -3,12 +3,12 @@ import os
 
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 from db.database import init_db
 from db.seed import seed
 
-load_dotenv()
+load_dotenv(find_dotenv())  # load .env file if present 
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -18,22 +18,38 @@ bot = commands.Bot(command_prefix="!htb", intents=intents)
 
 COGS = ["cogs.players", "cogs.admin"]
 
+MODE = os.getenv("MODE", "test").lower()
+
+if MODE not in ["test", "team-elite", "prod"]:
+    raise ValueError("MODE must be one of 'test', 'team-elite', or 'prod'")
+
+MY_TEST_GUILD_ID = os.getenv("MY_TEST_GUILD_ID", "")
+TEAM_ELITE_GUILD_ID = os.getenv("TEAM_ELITE_GUILD_ID", "")
+GUILD_ID = None
+
+if MODE == "test":
+    GUILD_ID = MY_TEST_GUILD_ID
+elif MODE == "team-elite":
+    GUILD_ID = TEAM_ELITE_GUILD_ID
+
+if GUILD_ID is None and MODE != "prod":
+    raise ValueError("MY_TEST_GUILD_ID or TEAM_ELITE_GUILD_ID must be set in .env for test or team-elite mode")
 
 async def load_cogs():
     for ext in COGS:
         await bot.load_extension(ext)
 
-TEST_GUILD_ID = "1539155068472008716"
-
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user} ({bot.user.id})")
-    guild = discord.Object(id=TEST_GUILD_ID)
-    bot.tree.copy_global_to(guild=guild)
-    synced = await bot.tree.sync(guild=guild)
-    print(f"Synced {len(synced)} commands to test guild")
-    # synced = await bot.tree.sync()
-    # print(f"Synced {len(synced)} slash commands")
+    if MODE in ["test", "team-elite"]:
+        guild = discord.Object(id=GUILD_ID)
+        bot.tree.copy_global_to(guild=guild)
+        synced = await bot.tree.sync(guild=guild)
+        print(f"Synced {len(synced)} slash commands to {GUILD_ID} guild")
+    elif MODE == "prod":
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} slash commands")
 
 
 async def main():
@@ -45,4 +61,7 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("Shutting down...")

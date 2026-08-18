@@ -15,9 +15,14 @@ capital_ships.csv from the game's own data tables, so max_level here reflects
 each mod/ship's actual highest upgrade tier (length of its upgrade-cost array).
 
 Run standalone with: python -m db.seed
+Pass --clear to also delete mod_types/ship_types rows whose key no longer
+appears in the seed JSON (e.g. after removing an entry from mods_seed.json).
+Rows still referenced by PlayerMod/PlayerShip will raise an IntegrityError
+instead of being silently orphaned or cascaded away.
 """
 import json
 import os
+import sys
 
 from db.database import get_session, init_db
 from db.models import ModAlias, ModType, ShipType
@@ -25,7 +30,7 @@ from db.models import ModAlias, ModType, ShipType
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 
 
-def seed():
+def seed(clear: bool = False):
     init_db()
     session = get_session()
 
@@ -34,18 +39,37 @@ def seed():
     with open(os.path.join(DATA_DIR, "ships_seed.json")) as f:
         ships = json.load(f)
 
+    if clear:
+        mod_keys = {m["key"] for m in mods}
+        ship_keys = {s["key"] for s in ships}
+
+        stale_mod_keys = [k for (k,) in session.query(ModType.key).filter(ModType.key.notin_(mod_keys))]
+        if stale_mod_keys:
+            session.query(ModAlias).filter(ModAlias.mod_key.in_(stale_mod_keys)).delete(synchronize_session=False)
+            session.query(ModType).filter(ModType.key.in_(stale_mod_keys)).delete(synchronize_session=False)
+
+        stale_ship_keys = [k for (k,) in session.query(ShipType.key).filter(ShipType.key.notin_(ship_keys))]
+        if stale_ship_keys:
+            session.query(ShipType).filter(ShipType.key.in_(stale_ship_keys)).delete(synchronize_session=False)
+
+        session.commit()
+        if stale_mod_keys or stale_ship_keys:
+            print(f"Cleared {len(stale_mod_keys)} stale mod type(s) and {len(stale_ship_keys)} stale ship type(s).")
+
     for m in mods:
         existing = session.get(ModType, m["key"])
         if existing:
             existing.name = m["name"]
             existing.slot_type = m.get("slot_type")
             existing.max_level = m["max_level"]
+            existing.min_level = m.get("min_level", 1)
         else:
             existing = ModType(
                 key=m["key"],
                 name=m["name"],
                 slot_type=m.get("slot_type"),
                 max_level=m["max_level"],
+                min_level=m.get("min_level", 1),
             )
             session.add(existing)
             session.flush()  # need mod_types row to exist before FK'd aliases
@@ -81,4 +105,4 @@ def seed():
 
 
 if __name__ == "__main__":
-    seed()
+    seed(clear="--clear" in sys.argv)
