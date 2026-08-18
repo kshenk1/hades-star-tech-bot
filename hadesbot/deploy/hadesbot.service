@@ -1,0 +1,36 @@
+[Unit]
+Description=Hades Star Discord Tech Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Run as a dedicated non-root user (see deploy/setup.sh) rather than ec2-user,
+# so a bug in the bot can't touch anything outside /opt/hadesbot.
+User=hadesbot
+Group=hadesbot
+WorkingDirectory=/opt/hadesbot
+EnvironmentFile=/opt/hadesbot/.env
+ExecStart=/opt/hadesbot/venv/bin/python /opt/hadesbot/bot.py
+
+# Restart on crash, but back off if it's crash-looping (e.g. bad token)
+# so it doesn't hammer Discord's API and get rate-limited/banned.
+Restart=on-failure
+RestartSec=10
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+# Basic hardening — the bot only needs its own directory and outbound network.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/opt/hadesbot
+ProtectHome=true
+
+# journald captures stdout/stderr — view with: journalctl -u hadesbot -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hadesbot
+
+[Install]
+WantedBy=multi-user.target
