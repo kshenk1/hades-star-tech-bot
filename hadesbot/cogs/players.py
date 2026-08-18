@@ -129,7 +129,7 @@ class Players(commands.Cog):
         finally:
             session.close()
 
-    @app_commands.command(name="mods", description="List all mods set for a user")
+    @app_commands.command(name="mods", description="List all mods you've set and their levels")
     async def mods(self, interaction: discord.Interaction):
         session = get_session()
         try:
@@ -142,7 +142,7 @@ class Players(commands.Cog):
             )
             mods = session.execute(stmt).scalars().all()
             lines = [f"{pm.mod_type.name}: level {pm.level}" for pm in mods]
-            embed = discord.Embed(title="All Mods", description="\n".join(lines))
+            embed = discord.Embed(title="All Mods", description="\n".join(lines), color=discord.Color.blurple())
             await interaction.response.send_message(embed=embed)
         finally:
             session.close()
@@ -241,12 +241,16 @@ class Players(commands.Cog):
 
             session.commit()
 
-            parts = []
+            embeds = []
             if updated:
-                parts.append(f"✅ Updated {len(updated)}: {', '.join(updated)}")
+                embeds.append(discord.Embed(title=f"✅ Updated ({len(updated)})", description="\n".join(updated), color=discord.Color.green()))
             if errors:
-                parts.append(f"⚠️ Skipped {len(errors)}: {', '.join(errors)}")
-            await interaction.response.send_message("\n".join(parts) or "Nothing to update.")
+                embeds.append(discord.Embed(title=f"⚠️ Skipped ({len(errors)})", description="\n".join(errors), color=discord.Color.red()))
+                
+            if embeds:
+                await interaction.response.send_message(embeds=embeds)
+            else:
+                await interaction.response.send_message("Nothing to update.")
         finally:
             session.close()
 
