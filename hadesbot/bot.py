@@ -16,7 +16,7 @@ intents.members = True  # needed to resolve display names reliably
 
 bot = commands.Bot(command_prefix="!htb", intents=intents)
 
-COGS = ["cogs.players", "cogs.admin"]
+COGS = ["cogs.players", "cogs.admin", "cogs.help"]
 
 MODE = os.getenv("MODE", "test").lower()
 
