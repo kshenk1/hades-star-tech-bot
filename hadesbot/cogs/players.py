@@ -338,7 +338,8 @@ class Players(commands.Cog):
             stmt = select(PlayerMod).where(PlayerMod.mod_key == mod_type.key).order_by(PlayerMod.level.desc())
             mods = session.execute(stmt).scalars().all()
             lines = [f"{pm.player.display_name}: level {pm.level}" for pm in mods]
-            embed = discord.Embed(title=f"Mod: {mod_type.name}", description="\n".join(lines) or "No players have set this mod yet.")
+            color = SLOT_TYPE_COLORS.get(mod_type.slot_type, discord.Color.blurple())
+            embed = discord.Embed(title=f"Mod: {mod_type.name}", description="\n".join(lines) or "No players have set this mod yet.", color=color)
             await interaction.response.send_message(embed=embed)
         finally:
             session.close()
