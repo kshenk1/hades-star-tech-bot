@@ -2,6 +2,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from sqlalchemy import func, select
+from zoneinfo import ZoneInfo
+import re
+from datetime import datetime
 
 from db.database import get_session
 from db.models import Guild, Player, PlayerMod
@@ -103,6 +106,70 @@ class Admin(commands.Cog):
         finally:
             session.close()
 
+    # ---------- roster ----------
+    @app_commands.command(name="warroster", description="[Admin] Timezone + mod/ship rundown for a set of players, e.g. a White Star Battle roster")
+    @app_commands.describe(members="@-mention everyone who's confirmed, e.g. @Alice @Bob @Carol")
+    @app_commands.checks.has_permissions(manage_guild=True)
+    async def warroster(self, interaction: discord.Interaction, members: str):
+        member_ids = [int(uid) for uid in re.findall(r"<@!?(\d+)>", members)]
+        if not member_ids:
+            await interaction.response.send_message("Mention at least one player, e.g. `@Alice @Bob`.", ephemeral=True)
+            return
+
+        await interaction.response.defer()
+
+        resolved, unresolved = [], []
+        for uid in member_ids:
+            member = interaction.guild.get_member(uid)
+            if member is None:
+                try:
+                    member = await interaction.guild.fetch_member(uid)
+                except discord.NotFound:
+                    unresolved.append(uid)
+                    continue
+            resolved.append(member)
+
+        session = get_session()
+        try:
+            rows = []
+            for member in resolved:
+                stmt = select(Player).where(Player.guild_id == interaction.guild.id, Player.discord_user_id == member.id)
+                player = session.execute(stmt).scalar_one_or_none()
+
+                if player and player.timezone:
+                    now = datetime.now(ZoneInfo(player.timezone))
+                    tz_display = f"{player.timezone} ({now.strftime('%I:%M %p')})"
+                    sort_key = (0, now.utcoffset())
+                else:
+                    tz_display = "no timezone set"
+                    sort_key = (1, member.display_name)
+
+                if player and player.mods:
+                    mod_lines = ", ".join(f"{pm.mod_type.name} {pm.level}" for pm in sorted(player.mods, key=lambda pm: pm.mod_type.name))
+                else:
+                    mod_lines = "none tracked"
+                if player and player.ships:
+                    ship_lines = ", ".join(f"{ps.ship_type.name} {ps.level}" for ps in sorted(player.ships, key=lambda ps: ps.ship_type.name))
+                else:
+                    ship_lines = "none tracked"
+
+                rows.append((sort_key, member.display_name, tz_display, mod_lines, ship_lines))
+
+            rows.sort(key=lambda r: r[0])
+
+            embed = discord.Embed(title=f"⚔️ White Star Battle Roster ({len(rows)})", color=discord.Color.red())
+            for _, name, tz_display, mod_lines, ship_lines in rows:
+                value = f"**Mods:** {mod_lines}\n**Ships:** {ship_lines}"
+                if len(value) > 1024:
+                    value = value[:1021] + "..."
+                embed.add_field(name=f"{name} — {tz_display}", value=value, inline=False)
+
+            if unresolved:
+                embed.set_footer(text=f"Couldn't resolve {len(unresolved)} mention(s) — they may have left the server.")
+
+            await interaction.followup.send(embed=embed)
+        finally:
+            session.close()
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot))

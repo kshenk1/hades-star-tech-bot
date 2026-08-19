@@ -22,17 +22,25 @@ def init_db():
     _add_missing_columns()
 
 
+COLUMNS_ADDED_AFTER_LAUNCH = [
+    # (table, column, ALTER TABLE ... ADD COLUMN clause)
+    ("mod_types", "min_level", "ALTER TABLE mod_types ADD COLUMN min_level INTEGER DEFAULT 1"),
+    ("players", "timezone", "ALTER TABLE players ADD COLUMN timezone VARCHAR(60)"),
+]
+
+
 def _add_missing_columns():
     """create_all() only adds new tables, not new columns on existing ones —
     patch in columns added after a table already existed on disk."""
     inspector = inspect(engine)
-    if "mod_types" not in inspector.get_table_names():
-        return
-    
-    existing_columns = {col["name"] for col in inspector.get_columns("mod_types")}
-    if "min_level" not in existing_columns:
-        with engine.begin() as conn:
-            conn.execute(text("ALTER TABLE mod_types ADD COLUMN min_level INTEGER DEFAULT 1"))
+    table_names = set(inspector.get_table_names())
+    for table, column, alter_sql in COLUMNS_ADDED_AFTER_LAUNCH:
+        if table not in table_names:
+            continue
+        existing_columns = {col["name"] for col in inspector.get_columns(table)}
+        if column not in existing_columns:
+            with engine.begin() as conn:
+                conn.execute(text(alter_sql))
 
 
 def get_session():

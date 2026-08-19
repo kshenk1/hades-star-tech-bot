@@ -1,3 +1,6 @@
+from datetime import datetime
+from zoneinfo import ZoneInfo, available_timezones
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -101,6 +104,11 @@ class Players(commands.Cog):
             return [app_commands.Choice(name=s.name, value=s.key) for s in results]
         finally:
             session.close()
+
+    async def timezone_autocomplete(self, interaction: discord.Interaction, current: str):
+        current = current.lower()
+        matches = sorted(z for z in available_timezones() if current in z.lower())
+        return [app_commands.Choice(name=z, value=z) for z in matches[:25]]
 
     # ---------- mods ----------
     @app_commands.command(name="listmods", description="List all modules and their aliases for a module type")
@@ -432,6 +440,62 @@ class Players(commands.Cog):
 
             lines = [f"{i+1}. {p.display_name} — level {lvl}" for i, (p, lvl) in enumerate(rows)]
             embed = discord.Embed(title=f"Leaderboard: {mod_type.name}", description="\n".join(lines))
+            await interaction.response.send_message(embed=embed)
+        finally:
+            session.close()
+
+    # ---------- timezone ----------
+    @app_commands.command(name="settimezone", description="Set your timezone")
+    @app_commands.autocomplete(timezone=timezone_autocomplete)
+    async def settimezone(self, interaction: discord.Interaction, timezone: str):
+        if timezone not in available_timezones():
+            await interaction.response.send_message(
+                "Unknown timezone. Pick one from the autocomplete list (e.g. `America/New_York`, `Europe/London`).",
+                ephemeral=True,
+            )
+            return
+
+        session = get_session()
+        try:
+            player = get_or_create_player(session, interaction.guild, interaction.user)
+            player.timezone = timezone
+            session.commit()
+            now = datetime.now(ZoneInfo(timezone)).strftime("%I:%M %p")
+            await interaction.response.send_message(f"Timezone set to **{timezone}** — it's currently {now} there.", ephemeral=True)
+        finally:
+            session.close()
+
+    @app_commands.command(name="gettimezone", description="Get your (or someone else's) timezone")
+    async def gettimezone(self, interaction: discord.Interaction, member: discord.Member | None = None):
+        member = member or interaction.user
+        session = get_session()
+        try:
+            player = get_or_create_player(session, interaction.guild, member)
+            if not player.timezone:
+                await interaction.response.send_message(f"{member.display_name} hasn't set a timezone yet.", ephemeral=True)
+                return
+            now = datetime.now(ZoneInfo(player.timezone)).strftime("%I:%M %p")
+            await interaction.response.send_message(f"**{member.display_name}**'s timezone is **{player.timezone}** — currently {now} there.", ephemeral=True)
+        finally:
+            session.close()
+
+    @app_commands.command(name="time", description="Show the current time for everyone who has set a timezone")
+    async def time(self, interaction: discord.Interaction):
+        session = get_session()
+        try:
+            stmt = select(Player).where(Player.guild_id == interaction.guild.id, Player.timezone.is_not(None))
+            players = session.execute(stmt).scalars().all()
+            if not players:
+                await interaction.response.send_message("No one has set a timezone yet.", ephemeral=True)
+                return
+
+            rows = []
+            for p in players:
+                now = datetime.now(ZoneInfo(p.timezone))
+                rows.append((now.utcoffset(), f"{p.display_name} — {p.timezone} ({now.strftime('%I:%M %p')})"))
+            rows.sort(key=lambda r: r[0])
+
+            embed = discord.Embed(title="Timezones", description="\n".join(line for _, line in rows), color=discord.Color.blurple())
             await interaction.response.send_message(embed=embed)
         finally:
             session.close()

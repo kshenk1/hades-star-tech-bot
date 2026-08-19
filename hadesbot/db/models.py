@@ -52,6 +52,7 @@ class Player(Base):
     discord_user_id: Mapped[int] = mapped_column(BigInteger)
     display_name: Mapped[str] = mapped_column(String(100))
     corp_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    timezone: Mapped[str | None] = mapped_column(String(60), nullable=True)  # IANA name, e.g. "America/New_York"
     updated_at: Mapped[dt.datetime] = mapped_column(
         DateTime, default=dt.datetime.utcnow, onupdate=dt.datetime.utcnow
     )

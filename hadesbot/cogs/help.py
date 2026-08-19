@@ -46,7 +46,15 @@ class Help(commands.Cog):
             ),
             inline=False,
         )
-
+        embed.add_field(
+            name="🕒 Timezone",
+            value=(
+                "`/settimezone <timezone>` — set your timezone (e.g. `America/New_York`)\n"
+                "`/gettimezone [member]` — see your (or someone else's) timezone and local time\n"
+                "`/time` — show the current time for everyone who's set a timezone, sorted by local time"
+            ),
+            inline=False,
+        )
         if interaction.user.guild_permissions.manage_guild:
             embed.add_field(
                 name="🛡️ Admin (Manage Server)",
@@ -54,7 +62,9 @@ class Help(commands.Cog):
                     "`/setofficerrole <role>` — set which role can edit other players' stats\n"
                     "`/modusers` — list players who have entered mod data\n"
                     "`/userdata <member>` — dump everything tracked for a player\n"
-                    "`/purgeuser <member> confirm:True` — permanently delete a player's data"
+                    "`/purgeuser <member> confirm:True` — permanently delete a player's data\n"
+                    "`/warroster <members>` — @-mention a set of players (e.g. your White Star Battle lineup) "
+                    "for a combined timezone + mod/ship rundown, sorted by local time"
                 ),
                 inline=False,
             )
