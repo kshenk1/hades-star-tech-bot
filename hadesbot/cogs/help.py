@@ -40,7 +40,8 @@ class Help(commands.Cog):
         embed.add_field(
             name="📊 Stats",
             value=(
-                "`/profile [member]` — full mod/ship rundown for you or someone else\n"
+                "`/profile [member] [public]` — full mod/ship rundown for you or someone else\n"
+                "  ↳ your own profile posts publicly by default, others' privately — set `public` to override either way\n"
                 "`/leaderboard <mod>` — top 10 players for a mod"
             ),
             inline=False,

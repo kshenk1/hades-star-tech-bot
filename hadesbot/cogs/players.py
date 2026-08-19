@@ -363,12 +363,13 @@ class Players(commands.Cog):
             session.close()
 
     @app_commands.command(name="profile", description="Show a player's tracked mod/ship levels")
-    async def profile(self, interaction: discord.Interaction, member: discord.Member | None = None):
-        ephemeral = True
-        if member and member.id == interaction.user.id:
-            ephemeral = False  # show your own profile publicly so you can share it
-            
+    @app_commands.describe(
+        member="Whose profile to show (defaults to you)",
+        public="Show this to everyone in the channel? Defaults to public for your own profile, private for others'",
+    )
+    async def profile(self, interaction: discord.Interaction, member: discord.Member | None = None, public: bool | None = None):
         member = member or interaction.user
+        ephemeral = not public if public is not None else member.id != interaction.user.id
         session = get_session()
         try:
             stmt = select(Player).where(Player.guild_id == interaction.guild.id, Player.discord_user_id == member.id)
