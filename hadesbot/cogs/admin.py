@@ -1,10 +1,10 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from db.database import get_session
-from db.models import Guild, Player
+from db.models import Guild, Player, PlayerMod
 
 
 class Admin(commands.Cog):
@@ -73,6 +73,33 @@ class Admin(commands.Cog):
             session.delete(player)
             session.commit()
             await interaction.response.send_message(f"Purged all data for {member.display_name}.", ephemeral=True)
+        finally:
+            session.close()
+
+    @app_commands.command(name="modusers", description="[Admin] List players who have entered mod data")
+    @app_commands.checks.has_permissions(manage_guild=True)
+    async def modusers(self, interaction: discord.Interaction):
+        session = get_session()
+        try:
+            stmt = (
+                select(Player, func.count(PlayerMod.id))
+                .join(PlayerMod, PlayerMod.player_id == Player.id)
+                .where(Player.guild_id == interaction.guild.id)
+                .group_by(Player.id)
+                .order_by(Player.display_name)
+            )
+            rows = session.execute(stmt).all()
+            if not rows:
+                await interaction.response.send_message("No players have entered mod data yet.", ephemeral=True)
+                return
+
+            lines = [f"{player.display_name} — {count} mod(s)" for player, count in rows]
+            embed = discord.Embed(
+                title=f"[Admin] Players with mod data ({len(rows)})",
+                description="\n".join(lines),
+                color=discord.Color.blurple(),
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
         finally:
             session.close()
 

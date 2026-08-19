@@ -52,6 +52,7 @@ class Help(commands.Cog):
                 name="🛡️ Admin (Manage Server)",
                 value=(
                     "`/setofficerrole <role>` — set which role can edit other players' stats\n"
+                    "`/modusers` — list players who have entered mod data\n"
                     "`/userdata <member>` — dump everything tracked for a player\n"
                     "`/purgeuser <member> confirm:True` — permanently delete a player's data"
                 ),
