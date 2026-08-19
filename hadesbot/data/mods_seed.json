@@ -143,11 +143,15 @@
   },
   {
     "key": "WeakBattery",
-    "name": "Weak Battery",
+    "name": "Battery",
     "slot_type": "Weapon",
     "max_level": 1,
     "min_level": 1,
-    "aliases": []
+    "aliases": [
+        "battery",
+        "batt",
+        "weak-battery"
+    ]
   },
   {
     "key": "MassBattery",
