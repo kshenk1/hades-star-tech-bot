@@ -125,7 +125,7 @@ class Players(commands.Cog):
 
             color = SLOT_TYPE_COLORS.get(mod_type, discord.Color.blurple())
             embed = discord.Embed(title=f"Modules: {mod_type}", description="\n".join(lines), color=color)
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
         finally:
             session.close()
 
@@ -143,7 +143,7 @@ class Players(commands.Cog):
             mods = session.execute(stmt).scalars().all()
             lines = [f"{pm.mod_type.name}: level {pm.level}" for pm in mods]
             embed = discord.Embed(title="All Mods", description="\n".join(lines), color=discord.Color.blurple())
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
         finally:
             session.close()
 
@@ -161,9 +161,9 @@ class Players(commands.Cog):
             stmt = select(PlayerMod).where(PlayerMod.player_id == player.id, PlayerMod.mod_key == mod)
             pm = session.execute(stmt).scalar_one_or_none()
             if pm:
-                await interaction.response.send_message(f"Your **{mod_type.name}** is level **{pm.level}**.")
+                await interaction.response.send_message(f"Your **{mod_type.name}** is level **{pm.level}**.", ephemeral=True)
             else:
-                await interaction.response.send_message(f"You haven't set a level for **{mod_type.name}** yet.")
+                await interaction.response.send_message(f"You haven't set a level for **{mod_type.name}** yet.", ephemeral=True)
         finally:
             session.close()
 
@@ -190,7 +190,7 @@ class Players(commands.Cog):
             else:
                 session.add(PlayerMod(player_id=player.id, mod_key=mod, level=level))
             session.commit()
-            await interaction.response.send_message(f"Set **{mod_type.name}** to level **{level}**.")
+            await interaction.response.send_message(f"Set **{mod_type.name}** to level **{level}**.", ephemeral=True)
         finally:
             session.close()
 
@@ -246,11 +246,11 @@ class Players(commands.Cog):
                 embeds.append(discord.Embed(title=f"✅ Updated ({len(updated)})", description="\n".join(updated), color=discord.Color.green()))
             if errors:
                 embeds.append(discord.Embed(title=f"⚠️ Skipped ({len(errors)})", description="\n".join(errors), color=discord.Color.red()))
-                
+
             if embeds:
-                await interaction.response.send_message(embeds=embeds)
+                await interaction.response.send_message(embeds=embeds, ephemeral=True)
             else:
-                await interaction.response.send_message("Nothing to update.")
+                await interaction.response.send_message("Nothing to update.", ephemeral=True)
         finally:
             session.close()
 
@@ -268,7 +268,7 @@ class Players(commands.Cog):
             )
             player_ships = session.execute(stmt).scalars().all()
             if not player_ships:
-                await interaction.response.send_message("You haven't set any ship designs yet.")
+                await interaction.response.send_message("You haven't set any ship designs yet.", ephemeral=True)
                 return
             embeds = [
                 discord.Embed(
@@ -278,7 +278,7 @@ class Players(commands.Cog):
                 )
                 for ps in player_ships
             ]
-            await interaction.response.send_message(embeds=embeds)
+            await interaction.response.send_message(embeds=embeds, ephemeral=True)
         finally:
             session.close()
 
@@ -320,7 +320,7 @@ class Players(commands.Cog):
             else:
                 session.add(PlayerShip(player_id=player.id, ship_key=ship, level=level))
             session.commit()
-            await interaction.response.send_message(f"Set **{ship_type.name}** to level **{level}**.")
+            await interaction.response.send_message(f"Set **{ship_type.name}** to level **{level}**.", ephemeral=True)
         finally:
             session.close()
 
@@ -364,6 +364,10 @@ class Players(commands.Cog):
 
     @app_commands.command(name="profile", description="Show a player's tracked mod/ship levels")
     async def profile(self, interaction: discord.Interaction, member: discord.Member | None = None):
+        ephemeral = True
+        if member and member.id == interaction.user.id:
+            ephemeral = False  # show your own profile publicly so you can share it
+            
         member = member or interaction.user
         session = get_session()
         try:
@@ -399,7 +403,7 @@ class Players(commands.Cog):
             if not player.ships and not player.mods:
                 embeds[0].description = "No mod/ship levels recorded yet."
 
-            await interaction.response.send_message(embeds=embeds)
+            await interaction.response.send_message(embeds=embeds, ephemeral=ephemeral)
         finally:
             session.close()
 
