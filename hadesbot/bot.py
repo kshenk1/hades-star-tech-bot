@@ -5,10 +5,10 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv, find_dotenv
 
+load_dotenv(find_dotenv())
+
 from db.database import init_db
 from db.seed import seed
-
-load_dotenv(find_dotenv())  # load .env file if present 
 
 intents = discord.Intents.default()
 intents.message_content = True

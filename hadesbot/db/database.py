@@ -28,6 +28,7 @@ def _add_missing_columns():
     inspector = inspect(engine)
     if "mod_types" not in inspector.get_table_names():
         return
+    
     existing_columns = {col["name"] for col in inspector.get_columns("mod_types")}
     if "min_level" not in existing_columns:
         with engine.begin() as conn:
