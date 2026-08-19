@@ -146,7 +146,7 @@
     "name": "Battery",
     "slot_type": "Weapon",
     "max_level": 1,
-    "min_level": 1,
+    "min_level": 15,
     "aliases": [
         "battery",
         "batt",
@@ -507,15 +507,15 @@
   },
   {
     "key": "BomberLauncher",
-    "name": "Bomber Rocket",
+    "name": "Rocket Launcher",
     "slot_type": "Weapon",
-    "max_level": 2,
-    "min_level": 1,
+    "max_level": 15,
+    "min_level": 6,
     "aliases": [
+      "rocket-launcher",
+      "rocketlauncher",
       "bomberlauncher",
-      "bomber-launcher",
-      "bomber-rocket",
-      "bomberrocket"
+      "bomber-launcher"
     ]
   },
   {
