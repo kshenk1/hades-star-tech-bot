@@ -492,10 +492,15 @@ class Players(commands.Cog):
             rows = []
             for p in players:
                 now = datetime.now(ZoneInfo(p.timezone))
-                rows.append((now.utcoffset(), f"{p.display_name} — {p.timezone} ({now.strftime('%I:%M %p')})"))
+                rows.append((now.utcoffset(), p.display_name, p.timezone, now.strftime("%I:%M %p")))
             rows.sort(key=lambda r: r[0])
 
-            embed = discord.Embed(title="Timezones", description="\n".join(line for _, line in rows), color=discord.Color.blurple())
+            name_width = max(len(name) for _, name, _, _ in rows)
+            tz_width = max(len(tz) for _, _, tz, _ in rows)
+            lines = [f"{name.ljust(name_width)}  {tz.ljust(tz_width)}  {local_time}" for _, name, tz, local_time in rows]
+            table = "```\n" + "\n".join(lines) + "\n```"
+
+            embed = discord.Embed(title="Timezones", description=table, color=discord.Color.blurple())
             await interaction.response.send_message(embed=embed)
         finally:
             session.close()
