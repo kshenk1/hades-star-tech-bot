@@ -42,11 +42,20 @@ class Help(commands.Cog):
             value=(
                 "`/profile [member] [public]` — full mod/ship rundown for you or someone else\n"
                 "  ↳ your own profile posts publicly by default, others' privately — set `public` to override either way\n"
-                "`/leaderboard <mod>` — top 10 players for a mod"
+                "`/leaderboard <mod>` — top 10 players for a mod\n"
+                "`/ws-roster show <role>` — post that battle's roster + a full ship/mod CSV export, ordered by category"
             ),
             inline=False,
         )
-
+        embed.add_field(
+            name="🕒 Timezone",
+            value=(
+                "`/settimezone <timezone>` — set your timezone (e.g. `America/New_York`)\n"
+                "`/gettimezone [member]` — see your (or someone else's) timezone and local time\n"
+                "`/time` — show the current time for everyone who's set a timezone, sorted by local time"
+            ),
+            inline=False,
+        )
         if interaction.user.guild_permissions.manage_guild:
             embed.add_field(
                 name="🛡️ Admin (Manage Server)",
@@ -54,7 +63,11 @@ class Help(commands.Cog):
                     "`/setofficerrole <role>` — set which role can edit other players' stats\n"
                     "`/modusers` — list players who have entered mod data\n"
                     "`/userdata <member>` — dump everything tracked for a player\n"
-                    "`/purgeuser <member> confirm:True` — permanently delete a player's data"
+                    "`/purgeuser <member> confirm:True` — permanently delete a player's data\n"
+                    "`/ws-roster new <role> <player1..player10>` — start a battle under a role, assigns it to the 10 players\n"
+                    "  ↳ multiple battles can run at once under different roles, but a player can't be in two at once\n"
+                    "`/ws-roster end <role> <opponent> <relics_us> <relics_them>` — record the result, remove the role from the 10 players\n"
+                    "`/ws-roster factory-reset confirm:True` — permanently wipe ALL White Star Battle data for this server"
                 ),
                 inline=False,
             )
