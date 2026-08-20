@@ -26,6 +26,11 @@ COLUMNS_ADDED_AFTER_LAUNCH = [
     # (table, column, ALTER TABLE ... ADD COLUMN clause)
     ("mod_types", "min_level", "ALTER TABLE mod_types ADD COLUMN min_level INTEGER DEFAULT 1"),
     ("players", "timezone", "ALTER TABLE players ADD COLUMN timezone VARCHAR(60)"),
+    ("war_rosters", "role_id", "ALTER TABLE war_rosters ADD COLUMN role_id BIGINT"),
+    ("war_rosters", "role_name", "ALTER TABLE war_rosters ADD COLUMN role_name VARCHAR(100)"),
+    ("war_rosters", "opponent", "ALTER TABLE war_rosters ADD COLUMN opponent VARCHAR(200)"),
+    ("war_rosters", "relics_us", "ALTER TABLE war_rosters ADD COLUMN relics_us INTEGER"),
+    ("war_rosters", "relics_them", "ALTER TABLE war_rosters ADD COLUMN relics_them INTEGER"),
 ]
 
 
